@@ -5,18 +5,25 @@ namespace HtmlParser
 {
     class Document
     {
+        Element m_root;
         std::string m_doctype{};
-        Element* m_root{nullptr};
+
     public:
 
-        explicit Document(Element* root)
-            : m_root(root)
+        Document(Element&& root, std::string doctype)
+            : m_root(root), m_doctype(std::move(doctype))
         {
         }
 
-        void setDoctype(std::string&& data)
+        Element& html()
         {
-            m_doctype = data;
+            return m_root;
         }
+
+        Element* getElementById(std::string_view id);
+        std::vector<Element*> getElementsByTagName(std::string_view id);
+        std::vector<Element*> getElementsByClassName(std::string_view id);
+    private:
+        Element* getElementById(std::vector<Element>& elements, std::string_view id);
     };
 }
