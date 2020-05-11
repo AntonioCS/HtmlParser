@@ -76,7 +76,7 @@ target_compile_options(unit_tests
 
 target_include_directories(unit_tests
 	PUBLIC
-		test/
+		tests/
 		src/
 )
 
@@ -87,7 +87,17 @@ target_link_libraries(unit_tests
 		${LIBNAME}
 )
 
-#add_test(unittests unit_tests)
+add_custom_command(
+	TARGET unit_tests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/tests/basic.html"
+        "${PROJECT_SOURCE_DIR}/build"
+)
+
+add_test(unittests unit_tests)
+
+
+
 
 include(Catch)
 catch_discover_tests(unit_tests)
