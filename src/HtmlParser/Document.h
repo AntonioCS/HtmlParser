@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <functional>
 
 #include "Element.h"
 
@@ -25,8 +24,5 @@ namespace HtmlParser
         Element* getElementById(std::string_view id);
         std::vector<Element*> getElementsByTagName(std::string_view tagName);
         std::vector<Element*> getElementsByClassName(std::string_view className);
-    private:
-        Element* getElementById(std::vector<Element>& elements, std::string_view);
-        std::vector<Element*> getElementsByCondition(std::vector<Element>& elements, const std::function<bool(Element&)>&);
     };
 }

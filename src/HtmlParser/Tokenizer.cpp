@@ -1,188 +1,127 @@
 ﻿#include "Tokenizer.h"
 #include <algorithm>
-#include <stdexcept>
 #include <cctype>
 #include <iostream>
 
 namespace HtmlParser
 {
-    
-    void Tokenizer::tokenize(const std::string& html)
+    void Tokenizer::tokenize(const std::filesystem::path& file, TokenizerMode mode)
     {
-        m_html = html;
-        tokenize();
+        m_reader.setReadDataFromFile(file);
+        tokenize(mode);
     }
-    void Tokenizer::tokenize()
+
+    void Tokenizer::tokenize(const std::string& html, TokenizerMode mode)
     {
-        m_position = 0;
-        m_lines = 0;
-        char c{};
-        std::string text{};
-
-        while ((c = getChar()) != 0) {
-            switch (c) {
-            case '<':
-            {
-                //ignore if has a space
-                if (peek() == ' ')
-                    continue;
-                //TODO: Ignore comments: <!--code-->
-                if (m_html.substr(m_position+1, 3) == "!--") {
-                }
-
-                if (isValidText(text)) {
-                    m_tokens.emplace_back(TokenType::TEXT, text);
-                    //std::cout << "Text size: " << text.size() << '\n';
-                    //std::cout << "Text: " << text << '\n';                        
-                }
-                text.clear();
-
-
-                //TODO: This will not work properly for comments
-                //#1 - grab everything up to the first space or > and then figure out what type of tag it is
-                //#2 - #1 will not work for comments because as soon as you do <!-- it starts a comments even if it is like <!--<p>
-
-                //TODO: This will not work properly for reading files (but it might not be super complicated to fix)
-                std::string::size_type res;
-                if ((res = m_html.find('>', m_position)) != std::string::npos) {
-                    auto len = res - m_position;
-                    //do not take in < and >
-                    auto ele = m_html.substr(m_position + 1, len - 1);
-                    auto [elementName, attributes] = splitBySpace(ele);
-                    auto type = getTagType(elementName);
-
-                    if (type == TokenType::TAG_SELF_CLOSE && !attributes.empty() && attributes.back() == '/') attributes.pop_back();
-                    if (type == TokenType::TAG_CLOSE) elementName.erase(0, 1); //remove /
-                    if (type == TokenType::DOCTYPE) { //no need to store !doctype
-                        elementName = attributes;
-                        attributes.clear();
-                    }
-
-                    m_tokens.emplace_back(type, elementName, attributes);
-                    m_position += len;
-                }
-                else {
-                    //position is wrong!!
-                    throw std::runtime_error{ "Element is not closed on line " + m_lines + std::string{" position " + m_position } };
-                }
-            }
-            break;
-            case '\n':
-                m_lines++;
-                [[fallthrough]];
-            default:
-                text += c;
-            }
-
-            m_position++;
+        m_reader.setReadDataFromString(std::string_view{ html });
+        tokenize(mode);
+    }
+   
+    void Tokenizer::tokenize(TokenizerMode mode)
+    {
+        if (mode == TokenizerMode::NORMAL) {
+            m_lines = 0;
+            m_tokens.clear();
+            m_content.clear();
+            m_state = TokenizerState::TEXT;
         }
-    }
 
+        m_reader.resetPositions();
+        char c;
 
-
-    void Tokenizer::tokenize2()
-    {
-        m_position = 0;
-        m_lines = 0;
-        char c{};
-        std::string text{};
-        bool textNotValidTag{ false };
-        m_tokens.clear();
-
-        while ((c = getChar()) != 0) {
+        while ((c = m_reader.getChar()) != 0) {
         
             if (c == '\n') 
                 m_lines++;
 
             switch (m_state) {
+                case TokenizerState::CODE:
+                {
+                    m_after_quotes_jump_to_state = m_state;
+                    tokenizerStateHelper(c, '<', [this]()
+                        {
+                            if (m_reader.peek() == '/' && m_reader.getString(m_code_block.size()) == m_code_block) {
+                                if (!m_content.empty())
+                                    m_tokens.emplace_back(TokenType::CODE, m_content);
+
+                                m_state = TokenizerState::TAG_OPENED;
+                                m_content.clear();
+                            }
+                        });
+                }
+                break;
                 case TokenizerState::TEXT:
                 {
-                    if (c == '<' && peek() != ' ') {
-                        if (isValidText(text)) {
-                            m_tokens.emplace_back(TokenType::TEXT, text);
+                    if (c == '<' && m_reader.peek() != ' ') {
+                        if (!m_content.empty() && isValidText(m_content)) {
+                            m_tokens.emplace_back(TokenType::TEXT, m_content);
                         }
 
-                        if (peek() == '!' && getString(4) == "<!--") {
+                        if (m_reader.peek() == '!' && m_reader.getString(4) == "<!--") {
                             m_state = TokenizerState::COMMENT;
-                            m_position += 3;
+                            m_reader.incPosition(3);
                         }
                         else {
                             m_state = TokenizerState::TAG_OPENED;
                         }
 
-                        text.clear();
-                    } else {
-                        text += c;
-                    }
+                        m_content.clear();
+                    } else
+                        m_content += c;
                 }
                 break;
                 case TokenizerState::TAG_OPENED:
-                    switch (c) {
-                        case '>':
-                            {
-                                if (!textNotValidTag) {
-                                    auto [elementName, attributes] = splitBySpace(text);
-                                    auto type = getTagType(elementName);
+                    m_after_quotes_jump_to_state = m_state;
+                    tokenizerStateHelper(c, '>', [this]()
+                        {
+                            auto [elementName, attributes] = splitBySpace(m_content);
+                            auto type = getTagType(elementName);
 
-                                    if (type == TokenType::TAG_SELF_CLOSE && !attributes.empty() && attributes.back() == '/') attributes.pop_back();
-                                    if (type == TokenType::TAG_CLOSE) elementName.erase(0, 1); //remove /
-                                    if (type == TokenType::DOCTYPE) { //no need to store !doctype
-                                        elementName = attributes;
-                                        attributes.clear();
-                                    }
-
-                                    m_tokens.emplace_back(type, elementName, attributes);
-                                    m_state = TokenizerState::TEXT;
-                                    text.clear();
-                                } else text += c;
+                            if (type == TokenType::TAG_SELF_CLOSE && !attributes.empty() && attributes.back() == '/')
+                                attributes.pop_back();
+                            else if (type == TokenType::TAG_CLOSE)
+                                elementName.erase(0, 1); //remove /
+                            else if (type == TokenType::DOCTYPE) { //no need to store the word !doctype
+                                elementName = attributes;
+                                attributes.clear();
                             }
-                        break;
-                        case '"':
-                            if (backPeek() != '\\') textNotValidTag = !textNotValidTag;
-                            [[fallthrough]];
-                        default:
-                            text += c;
+
+                            m_tokens.emplace_back(type, elementName, attributes);
+
+                            if (type != TokenType::TAG_CLOSE && (elementName == "script" || elementName == "style")) {
+                                m_state = TokenizerState::CODE;
+                                m_code_block = elementName;
+                                m_code_block.insert(0, "</");
+                                m_code_block.append(">");
+                            }
+                            else {
+                                m_state = TokenizerState::TEXT;
+                            }
+
+                            m_content.clear();
+                        });
+                break;
+                case  TokenizerState::IN_QUOTES:
+                    m_content += c;
+
+                    if (c == m_quote_end_state_symbol && m_reader.backPeek() != '\\') {
+                        m_state = m_after_quotes_jump_to_state;
                     }
                 break;
                 case TokenizerState::COMMENT:
                 {
-                    if (c == '-' && getString(3) == "-->") {
+                    if (c == '-' && m_reader.getString(3) == "-->") {
                         m_state = TokenizerState::TEXT;
-                        m_position += 2;
+                        m_reader.incPosition(2);
                     }
                 }
                 break;
                 default:;
             }
             
-            m_position++;
+            m_reader.incPosition();
         }
-
     }
-
-
-    char Tokenizer::getChar(int i)
-    {
-        if (m_position + i < m_html.size())
-            return m_html[m_position + i];
-        return '\0';
-    }
-
-    std::string Tokenizer::getString(std::size_t size)
-    {
-        std::string res{};
-        std::size_t i{};
-
-        while (i < size) {
-            res += getChar();
-            m_position++;
-            i++;
-        }
-
-        m_position -= size;
-        return res;
-    }
-   
 
     std::pair<std::string, std::string> Tokenizer::splitBySpace(const std::string& str)
     {
@@ -225,9 +164,6 @@ namespace HtmlParser
 
     bool Tokenizer::isValidText(const std::string& str) const
     {
-        if (str.empty())
-            return false;
-
         if (str.size() == 1 && (str[0] == ' ' || str[0] == '\n' || str[0] == '\t'))
             return false;
 
@@ -240,4 +176,20 @@ namespace HtmlParser
 
         return !cpy.empty();
     }
+
+    void Tokenizer::tokenizerStateHelper(char c, char x, const std::function<void()>& func)
+    {
+        if (c == x) {
+            func();
+        }
+        else {
+            if (c == '"' || c == '\'') {
+                m_state = TokenizerState::IN_QUOTES;
+                m_quote_end_state_symbol = c;
+            }
+
+            m_content += c;
+        }
+    }
+
 }

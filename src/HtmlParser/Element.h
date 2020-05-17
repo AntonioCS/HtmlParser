@@ -98,7 +98,10 @@ namespace HtmlParser
 
         [[nodiscard]] bool hasAttributes() const;
         [[nodiscard]] bool hasAttribute(const std::string&) const;
-        [[nodiscard]] std::string attr(const std::string&);
+        [[nodiscard]] bool hasClass(std::string_view) const;
+
+        [[nodiscard]] std::string attr(const std::string&) const;
+        //[[nodiscard]] std::string attr(std::string_view;
         void attr(const std::string&, std::string);
         [[nodiscard]] bool hasChildren() const;
         [[nodiscard]] Element* getFirstChild();
@@ -110,6 +113,10 @@ namespace HtmlParser
         [[nodiscard]] std::string toString() const;
         [[nodiscard]] std::string toStringAttrList() const;
         [[nodiscard]] std::string_view getId() const;
+
+        Element* getElementById(std::string_view id);
+        std::vector<Element*> getElementsByTagName(std::string_view tagName);
+        std::vector<Element*> getElementsByClassName(std::string_view className);
 
     private:
         void processAttributeString(const std::string& attributesStr);

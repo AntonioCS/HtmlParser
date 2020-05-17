@@ -1,5 +1,7 @@
 ﻿#include "Element.h"
 
+#include "Util.h"
+
 namespace HtmlParser
 {
     Element* Element::getParent() const
@@ -113,6 +115,9 @@ namespace HtmlParser
 
     std::string Element::getInnerHtml() const
     {
+        if (m_inner_html.empty()) {
+            return toString();
+        }
         return m_inner_html;
     }
 
@@ -131,10 +136,20 @@ namespace HtmlParser
         return (m_attributes.find(attr) != m_attributes.end());
     }
 
-    std::string Element::attr(const std::string& name)
+    bool Element::hasClass(std::string_view className) const
+    {        
+        if (hasAttributes() && hasAttribute("class")) {
+            auto res = Util::split(attr("class"), ' ');
+            return std::find(res.begin(), res.end(), className) != res.end();
+        }
+
+        return false;
+    }
+
+    std::string Element::attr(const std::string& name) const
     {
         if (hasAttribute(name))
-            return m_attributes[name];
+            return m_attributes.at(name);
 
         return "";
     }
@@ -235,5 +250,62 @@ namespace HtmlParser
         }
 
         return std::string_view{};
+    }
+
+    Element* Element::getElementById(std::string_view id)
+    {
+        if (getId() == id)
+            return this;
+
+        if (hasChildren()) {
+            for (auto& element : m_children) {
+                auto res = element.getElementById(id);
+
+                if (res)
+                    return res;
+            }
+        }
+
+        return nullptr;
+    }
+
+    std::vector<Element*> Element::getElementsByTagName(std::string_view elementTagName)
+    {
+        std::vector<Element*> res{};
+
+        if (getElementName() == elementTagName)
+            res.push_back(this);
+
+        if (hasChildren()) {
+            for (auto& element : m_children) {
+                auto inner_res = element.getElementsByTagName(elementTagName);
+
+                if (!inner_res.empty()) {
+                    res.insert(res.begin(), inner_res.begin(), inner_res.end());
+                }
+            }
+        }
+
+        return res;
+    }
+
+    std::vector<Element*> Element::getElementsByClassName(std::string_view className)
+    {
+        std::vector<Element*> res{};
+
+        if (hasClass(className))
+            res.push_back(this);
+
+        if (hasChildren()) {
+            for (auto& element : m_children) {
+                auto inner_res = element.getElementsByClassName(className);
+
+                if (!inner_res.empty()) {
+                    res.insert(res.begin(), inner_res.begin(), inner_res.end());
+                }
+            }
+        }
+
+        return res;
     }
 }

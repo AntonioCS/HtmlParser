@@ -4,9 +4,19 @@
 
 namespace HtmlParser
 {
- 
+    Parser::Parser(const std::vector<Token>& tokens) : m_tokens(tokens)
+    {
+    }
+
     Document Parser::parse(const std::vector<Token>& tokens)
     {
+        m_tokens = tokens;
+        return parse();
+    }
+
+    Document Parser::parse()
+    {
+        const auto& tokens = m_tokens;
         std::string doctype{};
         Element root{ "html" };
         Element* parent{ &root };
@@ -45,6 +55,7 @@ namespace HtmlParser
                     }
                 }
                 break;
+                case TokenType::CODE:
                 case TokenType::TEXT:
                 {
                     Element ele{Element::Type::TEXT, parent, token.tag};
