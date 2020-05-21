@@ -58,7 +58,7 @@ target_compile_options(${LIBNAME}
 
 file(GLOB_RECURSE TEST_FILES 
 	CONFIGURE_DEPENDS 
-	${PROJECT_SOURCE_DIR}/tests/*.cpp
+	${PROJECT_SOURCE_DIR}/tests/*.cpp ${PROJECT_SOURCE_DIR}/tests/*.h
 )
 
 add_executable(unit_tests
