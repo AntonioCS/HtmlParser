@@ -42,7 +42,7 @@ namespace HtmlParser
                         {
                             if (m_reader.peek() == '/' && m_reader.getString(m_code_block.size()) == m_code_block) {
                                 if (!m_content.empty())
-                                    m_tokens.emplace_back(TokenType::CODE, m_content);
+                                    m_tokens.add(TokenType::CODE, m_content);
 
                                 m_state = TokenizerState::TAG_OPENED;
                                 m_content.clear();
@@ -54,7 +54,7 @@ namespace HtmlParser
                 {
                     if (c == '<' && m_reader.peek() != ' ') {
                         if (!m_content.empty() && isValidText(m_content)) {
-                            m_tokens.emplace_back(TokenType::TEXT, m_content);
+                            m_tokens.add(TokenType::TEXT, m_content);
                         }
 
                         if (m_reader.peek() == '!' && m_reader.getString(4) == "<!--") {
@@ -81,12 +81,11 @@ namespace HtmlParser
                                 attributes.pop_back();
                             else if (type == TokenType::TAG_CLOSE)
                                 elementName.erase(0, 1); //remove /
-                            else if (type == TokenType::DOCTYPE) { //no need to store the word !doctype
-                                elementName = attributes;
-                                attributes.clear();
+                            else if (type == TokenType::DOCTYPE) {
+                                elementName.erase(0, 1); //remove ! from !doctype
                             }
 
-                            m_tokens.emplace_back(type, elementName, attributes);
+                            m_tokens.add(type, elementName, attributes);
 
                             if (type != TokenType::TAG_CLOSE && (elementName == "script" || elementName == "style")) {
                                 m_state = TokenizerState::CODE;

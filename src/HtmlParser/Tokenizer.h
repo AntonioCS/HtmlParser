@@ -6,6 +6,7 @@
 #include <array>
 #include <filesystem>
 #include <functional>
+#include <HtmlParser/TokenCollection.h>
 
 
 #include "Token.h"
@@ -15,7 +16,7 @@ namespace HtmlParser
 {
 
     //TODO: Start using the Reader
-    class Tokenizer
+    class   Tokenizer
     {
     public:
         enum class TokenizerMode
@@ -35,7 +36,8 @@ namespace HtmlParser
         };
 
         std::size_t m_lines{};
-        std::vector<Token> m_tokens{};
+        //std::vector<Token> m_tokens{};
+        TokenCollection m_tokens;
         std::array<std::string, 17> m_self_closing_tags
         {
         "area","base","br","col","command",
@@ -72,7 +74,12 @@ namespace HtmlParser
             return m_lines;
         }
 
-        [[nodiscard]] const std::vector<Token>& getTokens() const
+        [[nodiscard]] const std::vector<Token>& getTokens()
+        {
+           return m_tokens.getAllTokens();
+        }
+
+        TokenCollection& getCollection()
         {
             return m_tokens;
         }
