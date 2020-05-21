@@ -2,6 +2,8 @@
 #include <HtmlParser/Tokenizer.h>
 #include <HtmlParser/Parser.h>
 
+#include "Fixer.h"
+
 namespace HtmlParser
 {
     Document HtmlParser::parse(const std::string& html)
@@ -54,7 +56,11 @@ namespace HtmlParser
     {
         tokenizer.tokenize();
 
-        Parser parser{ tokenizer.getTokens() };
+        auto res = tokenizer.getTokens();
+        Fixer fixer;
+        fixer.process(res);
+
+        Parser parser{ res };
         return parser.parse();
     }
 }
