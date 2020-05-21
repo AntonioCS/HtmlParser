@@ -2,8 +2,7 @@
 #include <HtmlParser/Tokenizer.h>
 #include "TestSharedData.h"
 #include <HtmlParser/Parser.h>
-#include <string>
-#include <iostream>
+
 
 TEST_CASE("Produce document", "[Parser]") {    
     HtmlParser::Parser parser;

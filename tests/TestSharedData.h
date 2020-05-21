@@ -4,7 +4,7 @@
 #include <HtmlParser/Token.h>
 
 static const std::vector<HtmlParser::Token> html_basic_expected_tokens{
-      {HtmlParser::TokenType::DOCTYPE,"html"},
+      {HtmlParser::TokenType::DOCTYPE,"doctype","html"},
       {HtmlParser::TokenType::TAG_OPEN,"html"},
       {HtmlParser::TokenType::TAG_OPEN,"body"},
       {HtmlParser::TokenType::TEXT, R"(Hello)"},
@@ -30,7 +30,7 @@ static const std::vector<HtmlParser::Token> html_basic_expected_tokens{
 };
 
 static const std::vector<HtmlParser::Token> html_img_expected_tokens{
-    {HtmlParser::TokenType::DOCTYPE, "html"},
+    {HtmlParser::TokenType::DOCTYPE, "doctype", "html"},
     {HtmlParser::TokenType::TAG_OPEN, "html"},
     {HtmlParser::TokenType::TAG_OPEN, "body"},
     {HtmlParser::TokenType::TAG_SELF_CLOSE, "img", R"(src="w3schools.jpg" alt="W3Schools.com" width="104" height="142")"},
@@ -39,7 +39,7 @@ static const std::vector<HtmlParser::Token> html_img_expected_tokens{
 };
 
 static const std::vector<HtmlParser::Token> html_comment_expected_tokens{
-    {HtmlParser::TokenType::DOCTYPE, "html"},
+    {HtmlParser::TokenType::DOCTYPE, "doctype", "html"},
     {HtmlParser::TokenType::TAG_OPEN, "html"},
     {HtmlParser::TokenType::TAG_OPEN, "body"},
     {HtmlParser::TokenType::TEXT, "text"},
