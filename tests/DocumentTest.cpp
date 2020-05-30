@@ -7,7 +7,7 @@ TEST_CASE("Docunent", "[Document]") {
         HtmlParser::Element{"body",
     {
                 HtmlParser::Element{HtmlParser::Element::Type::TEXT, "Hello document test"}, //
-                HtmlParser::Element {HtmlParser::Element::Type::SELF_CLOSE, "img", R"(src="w3schools.jpg" alt="W3Schools.com" width="104" height="142")"},
+                HtmlParser::Element {HtmlParser::Element::Type::TAG_SELF_CLOSE, "img", R"(src="w3schools.jpg" alt="W3Schools.com" width="104" height="142")"},
                 HtmlParser::Element { "div", R"(id="test" class="yellow zizzag test")", 
                     HtmlParser::Element{"div", R"(class="test")"}
                 },
