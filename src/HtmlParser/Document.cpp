@@ -10,12 +10,12 @@ namespace HtmlParser
         return m_root.getElementById(id);
     }
 
-    std::vector<Element*> Document::getElementsByTagName(std::string_view tagName)
+    ElementCollection Document::getElementsByTagName(std::string_view tagName)
     {
         return m_root.getElementsByTagName(tagName);
     }
 
-    std::vector<Element*> Document::getElementsByClassName(std::string_view className)
+    ElementCollection Document::getElementsByClassName(std::string_view className)
     {
         return m_root.getElementsByClassName(className);
     }

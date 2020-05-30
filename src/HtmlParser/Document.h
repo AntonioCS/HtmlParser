@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Element.h"
+#include "ElementCollection.h"
 
 namespace HtmlParser
 {
@@ -22,7 +23,7 @@ namespace HtmlParser
         }
 
         Element* getElementById(std::string_view id);
-        std::vector<Element*> getElementsByTagName(std::string_view tagName);
-        std::vector<Element*> getElementsByClassName(std::string_view className);
+        ElementCollection getElementsByTagName(std::string_view tagName);
+        ElementCollection getElementsByClassName(std::string_view className);
     };
 }
