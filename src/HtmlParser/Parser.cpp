@@ -34,7 +34,7 @@ namespace HtmlParser
                         continue;
                     }
 
-                    Element::Type elementType{ token.type == TokenType::TAG_SELF_CLOSE ? Element::Type::SELF_CLOSE : Element::Type::NORMAL };
+                    Element::Type elementType{ token.type == TokenType::TAG_SELF_CLOSE ? Element::Type::TAG_SELF_CLOSE : Element::Type::TAG };
                     Element ele{ elementType, parent, token.tag, token.attributes};
 
                     parent->addChild(std::move(ele));
