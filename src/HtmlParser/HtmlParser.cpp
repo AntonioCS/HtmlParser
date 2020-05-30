@@ -56,11 +56,11 @@ namespace HtmlParser
     {
         tokenizer.tokenize();
 
-        auto res = tokenizer.getTokens();
+        auto res = tokenizer.getCollection();
         Fixer fixer;
         fixer.process(res);
 
-        Parser parser{ res };
+        Parser parser{ res.getAllTokens() };
         return parser.parse();
     }
 }
