@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "ElementCollection.h"
+
 namespace HtmlParser
 {
     class Element
@@ -13,13 +15,13 @@ namespace HtmlParser
         enum class Type
         {
             TEXT,
-            SELF_CLOSE,
-            NORMAL
+            TAG_SELF_CLOSE,
+            TAG
         };
 
         const std::string tagName;
     private:
-        Type m_type{ Type::NORMAL };
+        Type m_type{ Type::TAG };
         Element* m_parent{ nullptr };
         std::string m_name{};
         std::vector<Element> m_children{};
@@ -37,13 +39,13 @@ namespace HtmlParser
     public:
         Element() = default;
 
-        Element(const std::string& name) : Element(Type::NORMAL, nullptr, name) {}
+        Element(const std::string& name) : Element(Type::TAG, nullptr, name) {}
 
-        Element(const std::string& name, const std::string& attributes) : Element(Type::NORMAL, nullptr, name, attributes) {}
+        Element(const std::string& name, const std::string& attributes) : Element(Type::TAG, nullptr, name, attributes) {}
 
-        Element(Element* parent, const std::string& name) : Element(Type::NORMAL, parent, name) {}
+        Element(Element* parent, const std::string& name) : Element(Type::TAG, parent, name) {}
 
-        Element(Element* parent, const std::string& name, const std::string& attributes) : Element(Type::NORMAL, parent, name, attributes) {}
+        Element(Element* parent, const std::string& name, const std::string& attributes) : Element(Type::TAG, parent, name, attributes) {}
 
         Element(Type type, const std::string& nameOrData) : Element(type, nullptr, nameOrData) {}
 
@@ -115,10 +117,11 @@ namespace HtmlParser
         [[nodiscard]] std::string_view getId() const;
 
         Element* getElementById(std::string_view id);
-        std::vector<Element*> getElementsByTagName(std::string_view tagName);
-        std::vector<Element*> getElementsByClassName(std::string_view className);
+        ElementCollection getElementsByTagName(std::string_view tagName);
+        ElementCollection getElementsByClassName(std::string_view className);
 
     private:
         void processAttributeString(const std::string& attributesStr);
+        [[nodiscard]] bool isTag() const { return m_type == Type::TAG || m_type == Type::TAG_SELF_CLOSE; }
     };
 }

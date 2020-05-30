@@ -1,5 +1,8 @@
 ﻿#include "Element.h"
 
+#include <iostream>
+
+
 #include "Util.h"
 
 namespace HtmlParser
@@ -214,7 +217,7 @@ namespace HtmlParser
 
         std::string output{ "<" + m_name + toStringAttrList() + ">\n"};
 
-        if (m_type == Type::NORMAL) {
+        if (m_type == Type::TAG) {
             for (const auto& child : m_children) {
                 output += "\t" + child.toString();
             }
@@ -269,19 +272,22 @@ namespace HtmlParser
         return nullptr;
     }
 
-    std::vector<Element*> Element::getElementsByTagName(std::string_view elementTagName)
+    ElementCollection Element::getElementsByTagName(std::string_view elementTagName)
     {
-        std::vector<Element*> res{};
 
-        if (getElementName() == elementTagName)
-            res.push_back(this);
+        ElementCollection res{};
 
-        if (hasChildren()) {
-            for (auto& element : m_children) {
-                auto inner_res = element.getElementsByTagName(elementTagName);
+        if (isTag()) {
+            if (getElementName() == elementTagName)
+                res.push_back(this);
 
-                if (!inner_res.empty()) {
-                    res.insert(res.begin(), inner_res.begin(), inner_res.end());
+            if (hasChildren()) {
+                for (auto& element : m_children) {
+                    auto inner_res = element.getElementsByTagName(elementTagName);
+
+                    if (!inner_res.empty()) {
+                        res.insert(res.end(), inner_res);
+                    }
                 }
             }
         }
@@ -289,19 +295,21 @@ namespace HtmlParser
         return res;
     }
 
-    std::vector<Element*> Element::getElementsByClassName(std::string_view className)
+    ElementCollection Element::getElementsByClassName(std::string_view className)
     {
-        std::vector<Element*> res{};
+        ElementCollection res{};
 
-        if (hasClass(className))
-            res.push_back(this);
+        if (isTag()) {
+            if (hasClass(className))
+                res.push_back(this);
 
-        if (hasChildren()) {
-            for (auto& element : m_children) {
-                auto inner_res = element.getElementsByClassName(className);
+            if (hasChildren()) {
+                for (auto& element : m_children) {
+                    auto inner_res = element.getElementsByClassName(className);
 
-                if (!inner_res.empty()) {
-                    res.insert(res.begin(), inner_res.begin(), inner_res.end());
+                    if (!inner_res.empty()) {
+                        res.insert(res.end(), inner_res);
+                    }
                 }
             }
         }
