@@ -16,6 +16,6 @@ namespace HtmlParser
         void process(TokenCollection&);
     private:
         void ensureProperStructure(TokenCollection&);
-        void analyseAndFix(TokenCollection&, std::size_t i = 1);
+        void analyseAndFix(TokenCollection&);
     };
 }

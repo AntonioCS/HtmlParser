@@ -127,7 +127,7 @@ namespace HtmlParser
     }
 
 
-    void Fixer::analyseAndFix(TokenCollection& tokenCollection, std::size_t i)
+    void Fixer::analyseAndFix(TokenCollection& tokenCollection)
     {
         bool run{ true };
 
