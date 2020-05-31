@@ -126,6 +126,16 @@ void output_tokens(const std::vector<HtmlParser::Token>& tokens)
     }
 }
 
+void output_tokens(const std::vector<HtmlParser::Token>& tokens, std::vector<HtmlParser::Token>::iterator start, std::vector<HtmlParser::Token>::iterator end)
+{
+    std::cout << "Size: " << std::distance(start, end) << '\n';
+
+    while(start != end) {
+        output_token(*start++);
+    }
+}
+
+
 void output_cpp_tokens(const std::vector<HtmlParser::Token>& tokens, const std::string& var_name, bool indent)
 {
     std::cout << "const std::vector<HtmlParser::Token> " << var_name << " {\n";
@@ -135,7 +145,7 @@ void output_cpp_tokens(const std::vector<HtmlParser::Token>& tokens, const std::
 
         if (indent && token.level + 10 > 0) {
             std::cout << "  ";
-            for (std::size_t i{ 0 }; i < ((token.level + 10) / 10); i++)
+            for (std::size_t s{ 0 }; s < ((token.level + 10) / 10); s++)
                 std::cout << "  ";
         }
 
@@ -147,7 +157,7 @@ void output_cpp_tokens(const std::vector<HtmlParser::Token>& tokens, const std::
             std::cout << ", R\"XX(" << token.tag << ")XX\"";
         }
         else {
-            std::cout << ",\" " << token.tag << '"';
+            std::cout << ", \"" << token.tag << '"';
         }
 
         if (!token.attributes.empty()) {
@@ -221,7 +231,7 @@ std::size_t totalProperTags(const std::vector<HtmlParser::Token>& tokens)
     for (const auto& ele : tokens) {
         if (ele.type != HtmlParser::TokenType::TAG_CLOSE
             && ele.type != HtmlParser::TokenType::TEXT
-            && ele.type != HtmlParser::TokenType::CODE
+            //&& ele.type != HtmlParser::TokenType::CODE
             && ele.type != HtmlParser::TokenType::DOCTYPE
             )
             total++;
@@ -278,6 +288,9 @@ void OutputCppTokens::output(const std::vector<HtmlParser::Token>& tokens, const
         if (fout.is_open()) {
             backup = std::cout.rdbuf();
             std::cout.rdbuf(fout.rdbuf());
+        } else {
+            std::cout << "Unable to open file\n";
+            exit(-1);
         }
     }
 
@@ -294,7 +307,7 @@ void OutputCppTokens::output(const std::vector<HtmlParser::Token>& tokens, const
 
         if (m_indent && token.level+10 > 0) {
             std::cout << "  ";
-            for (std::size_t i{0}; i < ((token.level+10) / 10); i++)
+            for (std::size_t n{0}; n < ((token.level+10) / 10); n++)
                 std::cout << "  ";
         }
 
@@ -308,7 +321,7 @@ void OutputCppTokens::output(const std::vector<HtmlParser::Token>& tokens, const
             else std::cout << ", R\"XX(" << token.tag << ")XX\"";
         }
         else {
-            std::cout << ",\"" << token.tag << '"';
+            std::cout << ", \"" << token.tag << '"';
         }
 
         if (!token.attributes.empty()) {
