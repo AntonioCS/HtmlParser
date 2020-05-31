@@ -37,8 +37,8 @@ TEST_CASE("Ensure correct processing from file", "[html_parser]") {
 	std::filesystem::path file{ std::string{"BigPage.html"} };
 	HtmlParser::HtmlParser hp{file};
 	auto dom = hp.parse();
-
-	auto allLinks = dom.getElementById("primary")->getElementsByTagName("a");
+	auto div = dom.getElementById("primary");
+	auto allLinks = div->getElementsByTagName("a");
 
 	REQUIRE(!allLinks.empty());
 }
