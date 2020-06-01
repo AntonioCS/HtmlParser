@@ -8,6 +8,7 @@
 void process_test(const std::string&, const std::vector<HtmlParser::Token>&, bool output_tokens_flag = false, bool output_cpp_tokens_flag = false);
 void compare_values(const std::vector<HtmlParser::Token>&, const std::vector<HtmlParser::Token>&, std::string info = "");
 void output_tokens(const std::vector<HtmlParser::Token>&);
+void output_tokens(const std::vector<HtmlParser::Token>& tokens, std::vector<HtmlParser::Token>::iterator, std::vector<HtmlParser::Token>::iterator);
 void output_cpp_tokens(
     const std::vector<HtmlParser::Token>&, 
     const std::string& var_name = "generated_tokens", 
