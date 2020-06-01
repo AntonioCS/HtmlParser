@@ -38,7 +38,15 @@ target_include_directories(${LIBNAME}
 	PUBLIC ${PROJECT_SOURCE_DIR}/src/
 )
 
+#add_custom_command(
+#	TARGET ${LIBNAME} POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#        "${PROJECT_SOURCE_DIR}/src/*.h"
+#        "${PROJECT_SOURCE_DIR}/build/HtmlParser"
+#)
 
+#to generate debug lib with d append to it
+set_target_properties(${LIBNAME} PROPERTIES DEBUG_POSTFIX _d)
 
 #To properly set the files in the treeview for MSVC
 foreach(source IN LISTS PROJ_SRC_FILES)
@@ -95,9 +103,6 @@ add_custom_command(
 )
 
 add_test(unittests unit_tests)
-
-
-
 
 include(Catch)
 catch_discover_tests(unit_tests)
