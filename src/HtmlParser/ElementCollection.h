@@ -1,8 +1,6 @@
 ﻿#pragma once
 
-#include <functional>
-#include <vector>
-#include <HtmlParser/Collection.h>
+#include "Collection.h"
 
 namespace HtmlParser {
 
