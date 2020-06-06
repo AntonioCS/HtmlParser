@@ -1,11 +1,8 @@
 ﻿#pragma once
-#include <vector>
-#include <HtmlParser/Token.h>
 
 namespace HtmlParser
 {
     class TokenCollection;
-
 
     class Fixer
     {
