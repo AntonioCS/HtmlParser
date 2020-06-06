@@ -1,7 +1,6 @@
-﻿#include "TokenCollection.h"
-#include <algorithm> //std::find_if
-#include <iostream>
+﻿#include <algorithm> //std::find_if
 #include <iterator> //std::distance
+#include "TokenCollection.h"
 
 //#define DEBUG_TOKENCOLLECTION
 #ifdef DEBUG_TOKENCOLLECTION

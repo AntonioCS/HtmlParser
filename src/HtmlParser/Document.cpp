@@ -1,7 +1,5 @@
 ﻿#include "Document.h"
 
-#include "Util.h"
-
 namespace HtmlParser
 {
 

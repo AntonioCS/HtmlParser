@@ -1,10 +1,10 @@
-﻿#include <HtmlParser/TokenCollection.h>
-#include <filesystem>
+﻿#include <filesystem>
 #include <utility>
 #include <array>
 #include <functional>
 #include <tuple>
 #include "Fixer.h"
+#include "TokenCollection.h"
 
 
 #define DEBUG_FIXER 0

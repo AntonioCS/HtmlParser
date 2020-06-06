@@ -1,7 +1,4 @@
 ﻿#include "HtmlParser.h"
-#include <HtmlParser/Tokenizer.h>
-#include <HtmlParser/Parser.h>
-
 #include "Fixer.h"
 
 namespace HtmlParser
