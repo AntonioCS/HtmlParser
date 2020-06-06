@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include <HtmlParser/Tokenizer.h>
-#include <HtmlParser/Parser.h>
+#include "Tokenizer.h"
+#include "Parser.h"
 
 namespace HtmlParser
 {

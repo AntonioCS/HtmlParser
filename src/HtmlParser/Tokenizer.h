@@ -6,7 +6,7 @@
 #include <array>
 #include <filesystem>
 #include <functional>
-#include <HtmlParser/TokenCollection.h>
+#include "TokenCollection.h"
 
 
 #include "Token.h"

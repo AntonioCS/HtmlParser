@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include <vector>
-#include <HtmlParser/Token.h>
+#include "Token.h"
 
 namespace HtmlParser
 {
