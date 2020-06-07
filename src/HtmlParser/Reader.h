@@ -1,6 +1,7 @@
-﻿#include <fstream>
+#pragma once
+
+#include <fstream>
 #include <filesystem>
-#include <string_view>
 
 #ifndef HTML_PARSER_READER_BUFFER_SIZE
 #define HTML_PARSER_READER_BUFFER_SIZE 16384 //16kb
