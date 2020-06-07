@@ -6,10 +6,8 @@
 #include <array>
 #include <filesystem>
 #include <functional>
-#include "TokenCollection.h"
-
-
 #include "Token.h"
+#include "TokenCollection.h"
 #include "Reader.h"
 
 namespace HtmlParser
