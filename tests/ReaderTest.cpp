@@ -5,7 +5,7 @@
 static std::filesystem::path file{ std::string {"basic.html" } };
 ///*
 TEST_CASE("Read data from file", "[reader]") {
-    Reader reader{ file };
+    HtmlParser::Reader reader{ file };
 
     REQUIRE(reader.getChar() == '<');
 
@@ -20,7 +20,7 @@ TEST_CASE("Read data from file", "[reader]") {
 
 TEST_CASE("Read data from file in smaller chunks", "[reader]") {
 
-    Reader reader{ 5, file };
+    HtmlParser::Reader reader{ 5, file };
 
     REQUIRE(reader.getChar() == '<');
 
