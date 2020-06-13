@@ -7,8 +7,8 @@ project("Html parser" DESCRIPTION "Html parser" VERSION 0.0.1 LANGUAGES CXX)
 include(CTest)
 enable_testing()
 
-set(EXENAME htmlparser)
 set(LIBNAME htmlparser)
+
 # Add local project module path so CMake includes custom CMake modules.
 #list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
@@ -106,3 +106,5 @@ add_test(unittests unit_tests)
 
 include(Catch)
 catch_discover_tests(unit_tests)
+
+add_subdirectory(examples/youtube.com)
