@@ -28,10 +28,12 @@ namespace HtmlParser {
         ReadData m_back_buffer{};
     public:
         Reader() = default;
+        Reader(const std::string& data) : m_str_buffer(data) { }
         Reader(const std::string_view data) : m_str_buffer(data) { }
-        Reader(const std::filesystem::path& file) { setReadDataFromFile(file); }
+        explicit Reader(const std::filesystem::path& file) { setReadDataFromFile(file); }
         Reader(std::size_t buffer_size, const std::string_view data) : Reader(data) { m_buffer_size = buffer_size; }
-        Reader(std::size_t buffer_size, const std::filesystem::path& file) : Reader(file) { m_buffer_size = buffer_size; }
+        explicit Reader(std::size_t buffer_size, const std::string& data) : Reader(data) { m_buffer_size = buffer_size; }
+        explicit Reader(std::size_t buffer_size, const std::filesystem::path& file) : Reader(file) { m_buffer_size = buffer_size; }
 
         [[nodiscard]] std::size_t getBufferSize() const { return m_buffer_size; }
 
