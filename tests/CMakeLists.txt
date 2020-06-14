@@ -1,10 +1,10 @@
 project(unit_tests DESCRIPTION "Tests for htmlparser")
 
-include(CTest)
-enable_testing()
+#include(CTest)
+#enable_testing()
 
-file(GLOB_RECURSE TEST_FILES_SRC 
-	CONFIpp src/*.h
+file(GLOB_RECURSE TEST_FILES_SRC CONFIGURE_DEPENDS
+	src/*.c* src/*.h
 )
 
 add_executable(unit_tests ${TEST_FILES_SRC})
@@ -31,14 +31,23 @@ target_link_libraries(unit_tests
 		Catch2::Catch2
 )
 
-add_custom_command(
-	TARGET unit_tests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/basic.html"
-        "${PROJECT_SOURCE_DIR}/build"
+message(Tests binary dir: ${PROJECT_BINARY_DIR})
+
+file(GLOB TEST_FILES_HTML
+	*.html
 )
 
-add_test(unittests unit_tests)
+##[[
+#copy command does not accept wildcards  - https://cmake.org/cmake/help/latest/manual/cmake.1.html#run-a-command-line-tool
+add_custom_command(
+	TARGET unit_tests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${TEST_FILES_HTML}
+        "${PROJECT_BINARY_DIR}/"
+)
+#]]
+
+#add_test(unittests unit_tests)
 
 include(Catch)
-catch_discover_tests(unit_tests)
+#catch_discover_tests(unit_tests)
