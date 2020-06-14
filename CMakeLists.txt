@@ -3,6 +3,9 @@ project("Html parser" DESCRIPTION "Html parser" VERSION 0.0.1 LANGUAGES CXX)
 
 option(HTMLPARSER_ENABLE_TESTS "Build the tests" ON)
 
+#include(CTest)
+#enable_testing()
+
 set(HTMLPARSER_LIBNAME htmlparser)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -19,8 +22,7 @@ if (MSVC)
 endif()
 
 #https://cmake.org/cmake/help/v3.14/command/file.html#glob
-file(GLOB_RECURSE PROJ_SRC_FILES
-	CONFIGURE_DEPENDS
+file(GLOB_RECURSE PROJ_SRC_FILES CONFIGURE_DEPENDS
 	${HTMLPARSER_SRC_DIR}/*.c* ${HTMLPARSER_SRC_DIR}/*.h*
 )
 
