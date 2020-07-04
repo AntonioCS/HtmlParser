@@ -1,7 +1,7 @@
 #include <iostream>
 #include <catch2/catch.hpp>
+#include <HtmlParser/Tokenizer.h>
 #include "TestHelper.h"
-#include "HtmlParser/Tokenizer.h"
 
 
 void process_test(const std::string& html, const std::vector<HtmlParser::Token>& expected, bool output_tokens_flag, bool output_cpp_tokens_flag)
