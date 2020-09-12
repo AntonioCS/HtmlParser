@@ -99,7 +99,7 @@ namespace HtmlParser
     void Element::addChild(Element&& child)
     {
         child.setParent(this);
-        m_children.push_back(child);
+        m_children.push_back(std::move(child));
     }
 
     std::vector<Element>& Element::getChildren()

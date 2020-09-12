@@ -13,7 +13,7 @@ namespace HtmlParser
     public:
 
         Document(Element&& root, std::string doctype)
-            : m_root(root), m_doctype(std::move(doctype))
+            : m_root(std::move(root)), m_doctype(std::move(doctype))
         {
         }
 

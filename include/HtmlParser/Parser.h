@@ -2,6 +2,7 @@
 #include <vector>
 #include "Token.h"
 #include "Document.h"
+#include <memory>
 
 namespace HtmlParser
 {
@@ -12,7 +13,7 @@ namespace HtmlParser
     public:
         Parser() = default;
         Parser(const std::vector<Token>& tokens);
-        Document parse(const std::vector<Token>& tokens);
-        Document parse();
+        std::unique_ptr<Document> parse(const std::vector<Token>& tokens);
+        std::unique_ptr<Document> parse() const;
     };
 }

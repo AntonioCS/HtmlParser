@@ -88,7 +88,7 @@ namespace HtmlParser
         }
 
     private:
-        std::pair<std::string, std::string> splitBySpace(const std::string& str);
+        std::pair<std::string, std::string> splitBySpace(const std::string& str) const;
         [[nodiscard]] bool isSelfClosingTag(const std::string& tag) const;
         [[nodiscard]] bool isValidText(const std::string& str) const;
         [[nodiscard]] TokenType getTagType(const std::string& tag) const;

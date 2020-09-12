@@ -120,9 +120,9 @@ namespace HtmlParser
         }
     }
 
-    std::pair<std::string, std::string> Tokenizer::splitBySpace(const std::string& str)
+    std::pair<std::string, std::string> Tokenizer::splitBySpace(const std::string& str) const
     {
-        auto toLowerTag = [](std::string& tag)
+        const auto toLowerTag = [](std::string& tag)
         {
             std::transform(tag.begin(), tag.end(), tag.begin(),
                 [](unsigned char c) { return std::tolower(c); });
@@ -154,8 +154,8 @@ namespace HtmlParser
 
     bool Tokenizer::isSelfClosingTag(const std::string& tag) const
     {
-        auto searchFor = (tag.back() == '/') ? tag.substr(0, tag.size() - 1) : tag;
-        auto fi = std::find(m_self_closing_tags.begin(), m_self_closing_tags.end(), searchFor);
+        const auto searchFor = (tag.back() == '/') ? tag.substr(0, tag.size() - 1) : tag;
+        const auto fi = std::find(m_self_closing_tags.begin(), m_self_closing_tags.end(), searchFor);
         return (fi != m_self_closing_tags.end());
     }
 

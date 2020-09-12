@@ -10,6 +10,6 @@ TEST_CASE("Produce document", "[Parser]") {
     auto doc = parser.parse(html_basic_expected_tokens);
     //auto doc = parser.parse(html_img_expected_tokens);
 
-    REQUIRE(doc.html().getTotalChildrenCount() == 12);
+    REQUIRE(doc->html().getTotalChildrenCount() == 12);
     //std::cout << "HTML:\n" << doc.html()->toString();
 }

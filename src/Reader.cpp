@@ -1,4 +1,5 @@
 #include <HtmlParser/Reader.h>
+#include <iostream>
 
 namespace  HtmlParser
 {
@@ -16,15 +17,18 @@ namespace  HtmlParser
             }
 
             if (m_line_position + size < m_buffer_size) {
-                return std::string{ m_buffer.data.begin() + m_line_position, m_buffer.data.begin() + m_line_position + size };
+                return std::string{ m_buffer.vecChar.begin() + m_line_position, m_buffer.vecChar.begin() + m_line_position + size };
             }
 
-            std::string result{ m_buffer.data.begin() + m_line_position, m_buffer.data.end() };
-            auto diff = m_buffer.data.end() - (m_buffer.data.begin() + m_line_position);
+            std::string result{ m_buffer.vecChar.begin() + m_line_position, m_buffer.vecChar.end() };
+            auto diff = m_buffer.vecChar.end() - (m_buffer.vecChar.begin() + m_line_position);
 
             savePositions();
             if (read()) {
-                result += std::string{ m_buffer.data.begin(), m_buffer.data.begin() + (size - diff) };
+                result += std::string{
+				m_buffer.vecChar.begin(),
+				m_buffer.vecChar.begin() + (size - diff)
+                };
                 loadSavedPositions();
                 swapToBackBuffer();
             }
@@ -55,8 +59,8 @@ namespace  HtmlParser
     char Reader::backPeek()
     {
         if (m_global_position > 0) {
-            if (m_has_file && m_line_position == 0 && !m_back_buffer.data.empty()) {
-                return m_back_buffer.data.back();
+            if (m_has_file && m_line_position == 0 && !m_back_buffer.vecChar.empty()) {
+                return m_back_buffer.vecChar.back();
             }
 
             savePositions();
@@ -72,14 +76,14 @@ namespace  HtmlParser
 
     char Reader::getCharFromFile()
     {
-        if (m_buffer.data.empty()) //first time
+        if (m_buffer.vecChar.empty()) //first time
             read();
         else if (m_line_position >= m_buffer_size) {
             if (!read())
                 return '\0';
         }
 
-        return m_buffer.data[m_line_position];
+        return m_buffer.vecChar[m_line_position];
     }
 
     char Reader::getCharFromStr()
@@ -107,9 +111,16 @@ namespace  HtmlParser
                 m_caused_read = true;
                 m_back_buffer = m_buffer;
 
-                m_buffer.data.assign(m_buffer_size, 0);
-                m_file.read(m_buffer.data.data(), m_buffer_size);
-                m_buffer.line_start = static_cast<std::size_t>(m_file.tellg());
+                m_buffer.vecChar.assign(m_buffer_size, 0); //clear buffer and set size
+                m_file.read(m_buffer.vecChar.data(), m_buffer_size);
+
+				//Unable to use tellg due to during tests it gave -14 as a result after a read (and it read something)
+				//std::cout << m_file.tellg() << '\n';
+
+                if (!m_buffer.vecChar.empty()) {
+                    m_buffer.line_start += m_buffer.vecChar.size();
+                }
+
                 m_global_position = (m_buffer.line_start < 0 ? 0 : m_buffer.line_start);
             }
 
@@ -156,7 +167,7 @@ namespace  HtmlParser
 
     void Reader::incPosition(const std::size_t increase)
     {
-        auto buffer = m_has_file ? m_buffer_size : m_str_buffer.size();
+        const auto buffer{ m_has_file ? m_buffer_size : m_str_buffer.size() };
         m_line_position += increase;
 
         if (m_global_position + increase < buffer)

@@ -2,7 +2,7 @@
 #include <HtmlParser/Element.h>
 #include <iostream>
 
-
+/*
 TEST_CASE("Ensure correct creation of element", "[Element]") {
     HtmlParser::Element ele{ "div", R"(id="test" class="yellow zizzag")" };
 
@@ -32,14 +32,17 @@ TEST_CASE("Ensure correct element registers children", "[Element]") {
     //std::cout << ele.toString();
 }
 
+///*
 TEST_CASE("Ensure getElementsByTagName works", "[Element]") {
     HtmlParser::Element ele{ "div", R"(id="test" class="yellow zizzag")",
-        {HtmlParser::Element{"p",
-            HtmlParser::Element{ HtmlParser::Element::Type::TEXT, "My text"}
-        },
+        {
+        	HtmlParser::Element{"p",
+				HtmlParser::Element{ HtmlParser::Element::Type::TEXT, "My text"}
+			},
             HtmlParser::Element{"p",
-            HtmlParser::Element{ HtmlParser::Element::Type::TEXT, "My text 2"}
-        }}
+				HtmlParser::Element{ HtmlParser::Element::Type::TEXT, "My text 2"}
+			}
+        }
     };
 
     REQUIRE(ele.hasChildren() == true);
@@ -47,3 +50,4 @@ TEST_CASE("Ensure getElementsByTagName works", "[Element]") {
     auto res = ele.getElementsByTagName("p");
     REQUIRE(res.empty() == false);
 }
+//*/

@@ -20,8 +20,8 @@ namespace HtmlParser {
 
         struct ReadData
         {
-            int line_start{};
-            std::vector<char> data{};
+            int line_start{0};
+            std::vector<char> vecChar{};
         };
 
         ReadData m_buffer{};

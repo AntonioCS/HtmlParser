@@ -96,7 +96,7 @@ TEST_CASE("HTML from file", "[Tokenizer_file_out]") {
     //REQUIRE(totalProperTags(res) == 50); //Firefox gives me 50 on document.getElementsByTagName("*").length
 }
 
-
+/*
 TEST_CASE("HTML from big file", "[Tokenizer_big_file]") {
     const std::filesystem::path file{ std::string{"BigPage_body_only.html"} };
     HtmlParser::Tokenizer t{ file };
@@ -108,3 +108,4 @@ TEST_CASE("HTML from big file", "[Tokenizer_big_file]") {
 
     REQUIRE(totalProperTags(res) == 75); //Firefox gives me 75 on document.getElementsByTagName("*").length
 }
+*/

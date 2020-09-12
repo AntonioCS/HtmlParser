@@ -6,7 +6,7 @@
 /*
 TEST_CASE("Ensure correct processing", "[html_parser]") {
 
-	const std::string expected_output ="<a id=\"mylink\" href=\"https://www.w3schools.com?data=T0xBIFRVRE8gQkVNPw==\">\n\tThis is a link\n</a>\n";
+	const std::string expected_output ="<a id=\"mylink\" href=\"https://www.w3schools.com?vecChar=T0xBIFRVRE8gQkVNPw==\">\n\tThis is a link\n</a>\n";
 	const std::string html_basic = R"(<!DOCTYPE html>
     <html>
 	    <BODY>
@@ -17,7 +17,7 @@ TEST_CASE("Ensure correct processing", "[html_parser]") {
 			    My first paragraph
 			    MultiLines!!123
 		    </p>
-		    <a id="mylink" href="https://www.w3schools.com?data=T0xBIFRVRE8gQkVNPw==">This is a link</a>
+		    <a id="mylink" href="https://www.w3schools.com?vecChar=T0xBIFRVRE8gQkVNPw==">This is a link</a>
 		    <IMG src="w3schools.jpg" alt="W3Schools.com" width="104" height="142"/>
 		    
 		    ddsadasasddasasdasd
@@ -37,7 +37,7 @@ TEST_CASE("Ensure correct processing from file", "[html_parser]") {
 	std::filesystem::path file{ std::string{"BigPage.html"} };
 	HtmlParser::HtmlParser hp{file};
 	auto dom = hp.parse();
-	auto div = dom.getElementById("primary");
+	auto div = dom->getElementById("primary");
 	auto allLinks = div->getElementsByTagName("a");
 
 	REQUIRE(!allLinks.empty());

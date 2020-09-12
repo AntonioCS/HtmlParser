@@ -3,21 +3,21 @@
 
 namespace HtmlParser
 {
-    Document HtmlParser::parse(const std::string& html)
+    std::unique_ptr<Document> HtmlParser::parse(const std::string& html) const
     {
         Tokenizer tokenizer{ html };
 
         return parse(tokenizer);
     }
 
-    Document HtmlParser::parse(const std::filesystem::path& file)
+    std::unique_ptr<Document> HtmlParser::parse(const std::filesystem::path& file) const
     {
         Tokenizer tokenizer{ file };
         
         return parse(tokenizer);
     }
 
-    Document HtmlParser::parse()
+    std::unique_ptr<Document> HtmlParser::parse()
     {
         if (!m_html.empty() || !m_file.empty() || m_tokenizer.hasTokens()) {
 
@@ -43,13 +43,13 @@ namespace HtmlParser
         m_tokenizer.tokenize(file);
     }
 
-    Document HtmlParser::result()
+    std::unique_ptr<Document> HtmlParser::result()
     {
-        Parser parser{ m_tokenizer.getTokens() };
+        const Parser parser{ m_tokenizer.getTokens() };
         return parser.parse();
     }
 
-    Document HtmlParser::parse(Tokenizer& tokenizer) const
+    std::unique_ptr<Document> HtmlParser::parse(Tokenizer& tokenizer) const
     {
         tokenizer.tokenize();
 
@@ -57,7 +57,7 @@ namespace HtmlParser
         Fixer fixer;
         fixer.process(res);
 
-        Parser parser{ res.getAllTokens() };
+        const Parser parser{ res.getAllTokens() };
         return parser.parse();
     }
 }

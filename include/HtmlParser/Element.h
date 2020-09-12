@@ -38,6 +38,21 @@ namespace HtmlParser
     public:
         Element() = default;
 
+        Element(Element&& other) noexcept
+	        : tagName(other.tagName),
+	          m_type(other.m_type),
+	          m_parent(other.m_parent),
+	          m_name(std::move(other.m_name)),
+	          m_children(std::move(other.m_children)),
+	          m_attributes(std::move(other.m_attributes)),
+	          m_inner_html(std::move(other.m_inner_html))
+        {
+        }
+
+        Element(const Element& other) = default;
+        Element& operator=(const Element& other) = delete;
+        Element& operator=(Element&& other) = delete;
+
         Element(const std::string& name) : Element(Type::TAG, nullptr, name) {}
 
         Element(const std::string& name, const std::string& attributes) : Element(Type::TAG, nullptr, name, attributes) {}
@@ -52,7 +67,9 @@ namespace HtmlParser
 
         Element(Type type, const std::string& name, const std::string& attributes) : Element(type, nullptr, name, attributes) {}
 
-        Element(Type type, Element* parent, const std::string& nameOrData, const std::string& attributes) : tagName(type == Type::TEXT ? "" : nameOrData), m_type(type), m_parent(parent), m_name(nameOrData){
+        Element(Type type, Element* parent, const std::string& nameOrData, const std::string& attributes)
+    		: tagName(type == Type::TEXT ? "" : nameOrData), m_type(type), m_parent(parent), m_name(nameOrData)
+    	{
             if (!attributes.empty())
                 processAttributeString(attributes);
 
@@ -69,7 +86,15 @@ namespace HtmlParser
 
         Element(const std::string& name, const std::string& attributes, Element&& child) : Element(nullptr, name, attributes, std::move(child)) {}
 
-        Element(Element* parent, const std::string& name, const std::string& attributes, Element&& child) : Element(parent, name, attributes, std::vector<Element>{ child }) {}
+        Element(Element* parent, const std::string& name, const std::string& attributes, Element&& child)
+    		: tagName(name), m_parent(parent), m_name(name)
+        {
+            if (!attributes.empty())
+                processAttributeString(attributes);
+
+            addChild(std::move(child));
+        }
+    	//Element(parent, name, attributes, std::vector<Element>{ std::move(child) }) {}
 
         Element(const std::string& name, std::vector<Element>&& children) : Element(nullptr, name, "", std::move(children)) {}
 
@@ -86,7 +111,7 @@ namespace HtmlParser
             }
         }
 
-        virtual ~Element() = default;
+        //virtual ~Element() = default;
 
         [[nodiscard]] Element* getParent() const;
         void setParent(Element* p);

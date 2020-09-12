@@ -8,18 +8,18 @@ namespace HtmlParser
     {
     }
 
-    Document Parser::parse(const std::vector<Token>& tokens)
+    std::unique_ptr<Document> Parser::parse(const std::vector<Token>& tokens)
     {
         m_tokens = tokens;
         return parse();
     }
 
-    Document Parser::parse()
+    std::unique_ptr<Document> Parser::parse() const
     {
         const auto& tokens = m_tokens;
         std::string doctype{};
         Element root{ "html" };
-        Element* parent{ &root };
+        auto* parent{ &root };
 
         for (const auto& token : tokens) {
             switch (token.type) {
@@ -48,7 +48,7 @@ namespace HtmlParser
                     if (parent != nullptr && parent->getElementName() == token.tag) {
                         parent = parent->getParent();
                     } else {
-                        std::string error_msg{ parent->getElementName() };
+                        std::string error_msg{ (parent != nullptr ? parent->getElementName() : "UNKNOWN") };
                         error_msg.insert(0, "No close tag for: ");
 
                         throw std::runtime_error{error_msg};
@@ -71,9 +71,9 @@ namespace HtmlParser
             }
         }
 
-        return Document{
+        return std::make_unique<Document>(
             std::move(root),
             doctype
-        };
+        );
     }
 }

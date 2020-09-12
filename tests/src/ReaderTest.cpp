@@ -15,7 +15,7 @@ namespace {
 			MultiLines!!123
 		</p>
 		<a 
-		href=">https://www.w3schools.com?data=T0xBIFRVRE8gQkVNPw=="
+		href=">https://www.w3schools.com?vecChar=T0xBIFRVRE8gQkVNPw=="
 		
 		
 		>This is a link</a>
@@ -26,8 +26,8 @@ namespace {
 </html>)"
     };
 }
-///*
-TEST_CASE("Read data from file", "[reader]") {
+/*
+TEST_CASE("Read vecChar from file", "[reader]") {
     HtmlParser::Reader reader{ file };
 
     REQUIRE(reader.getChar() == '<');
@@ -41,7 +41,8 @@ TEST_CASE("Read data from file", "[reader]") {
 }
 //*/
 
-TEST_CASE("Read data from file in smaller chunks", "[reader]") {
+///*
+TEST_CASE("Read vecChar from file in smaller chunks", "[reader]") {
 
     HtmlParser::Reader reader{ 5, file };
 
@@ -55,8 +56,9 @@ TEST_CASE("Read data from file in smaller chunks", "[reader]") {
 
     REQUIRE(reader.backPeek() == '<');
 }
+//*/
 
-TEST_CASE("Read data from string", "[reader]")
+TEST_CASE("Read vecChar from string", "[reader]")
 {
     HtmlParser::Reader reader{ file_data };
     REQUIRE(reader.getChar() == '<');
@@ -69,8 +71,8 @@ TEST_CASE("Read data from string", "[reader]")
     REQUIRE(reader.backPeek() == '<');
 
 }
-
-TEST_CASE("Read data from string in smaller chunks", "[reader]") {
+/*
+TEST_CASE("Read vecChar from string in smaller chunks", "[reader]") {
 
     HtmlParser::Reader reader{ 5, file_data };
 
@@ -85,5 +87,5 @@ TEST_CASE("Read data from string in smaller chunks", "[reader]") {
     REQUIRE(reader.backPeek() == '<');
 }
 
-
+*/
 

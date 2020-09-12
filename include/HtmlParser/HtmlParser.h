@@ -22,16 +22,16 @@ namespace HtmlParser
         HtmlParser(const std::string& html) : m_html(html) {}
         HtmlParser(const std::filesystem::path& file) : m_file(file) {}
 
-        Document parse(const std::string& html);
-        Document parse(const std::filesystem::path& file);
-        Document parse();
+        std::unique_ptr<Document> parse(const std::string& html) const;
+        std::unique_ptr<Document> parse(const std::filesystem::path& file) const;
+        std::unique_ptr<Document> parse();
 
         void parseChunks(const std::string& html);
         void parseChunks(const std::filesystem::path& file);
 
-        Document result();
+        std::unique_ptr<Document> result();
     private:
 
-        Document parse(Tokenizer& tokenizer) const;
+        std::unique_ptr<Document> parse(Tokenizer& tokenizer) const;
     };
 }
